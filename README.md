@@ -33,6 +33,11 @@ Anyone in in the EU want to mail me one?
 The equation that describes going from the source plane to the image plane is typically described as solving a 5th order polynomial in the case of a binary lens.  When using complex numbers the lens equation becomes a simple form that I believe is attributed to Witt (1990) http://adsabs.harvard.edu/abs/1990A%26A...236..311W
 The following series of papers were helpful in actually seeing how the lens equation is transformed into a 5th order polynomial in practice.
 
+Michael Miller (2013) http://researcharchive.vuw.ac.nz/xmlui/bitstream/handle/10063/2775/thesis.pdf?sequence=2
+Has a modern and extremely helpful explicit writing out the polynomial coefficients.
+
+Miller's work is based upon earlier works that I also found helpful
+
 Rhie, S (1997) http://adsabs.harvard.edu/abs/1997ApJ...484...63R
 
 Gaudi & Gould (1997) http://adsabs.harvard.edu/abs/1997ApJ...484...63R
@@ -40,4 +45,17 @@ Gaudi & Gould (1997) http://adsabs.harvard.edu/abs/1997ApJ...484...63R
 Rhie, S (2002) http://adsabs.harvard.edu/abs/2002astro.ph..2294R
 
 Bennett & Rhie (1996) http://adsabs.harvard.edu/abs/2002astro.ph..2294R
+
+Also helpful is Paul Chote's practical descriptions of the problem
+http://researcharchive.vuw.ac.nz/bitstream/handle/10063/1890/thesis.pdf?sequence=1
+
+Reading the above works allowed me to get the point source approximation with a binary lens model coded up.
+For treating finite source effects, I adopted they polygon or outline of the source approach.  The  uniform brightness finite image areas are calculated using line/contour integrals around the image boundaries.  This seemed intially more amenable to parallelization than the approaches taken by Bennett et al.  I believe contour integral approach is originaly attributed to 
+
+Gould & Gaucherel (1997) http://adsabs.harvard.edu/abs/1997ApJ...477..580G  in the case of binary lenses
+
+Bozza, V. (2010) http://adsabs.harvard.edu/abs/2010MNRAS.408.2188B  Takes this approach to higher order approximation.  I have yet to implement the treatment from here, but this paper is also a good read for the contour integral approach for finite sources.
+
+
+
 
