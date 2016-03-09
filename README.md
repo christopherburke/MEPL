@@ -58,6 +58,25 @@ Bozza, V. (2010) http://adsabs.harvard.edu/abs/2010MNRAS.408.2188B  Takes this a
 
 Performance
 
-The performance bottleneck is the call to polyroots in solving the 5th order polynomial.  
+There are two avenues to improve performance.  From profiling most time is spent in solve_binary_roots() in particular the call to numpy polyroots where the 5th order polynomial roots are determined.  One could try compiled root solving codes and interface them with MEPL.  There is Skowron & Gould (2012) open source code, but it seems tailored for binary lens, I dont know if it would support triple lens scenario should MEPL be extended to support triple lenses.  So maybe a more general compiled root finding code could be tried.
 
+The other avenue is to reduce the number of source vertices needed.  The fill_image_gap() functions job is to determine when large stretching of the source image was occurring and add more source vertices where needed.  The fill_image_gap was tuned in order to get sufficient resolution such that the subsequent call to finite_source_mag() would successfully be able to trace the image loops in the complicated case of the finite source strattling caustics.  Gould & Gaucherel (1997) show that actually tracing the image loops isnt necessary.  Thus, in principal one could forgo the complicated loop matching and deal with end points following Gould & Gaucherl.  This may reduce the requisite number of source vertices needed just to fullfill the loop matching code and one can then focus on a tuning fill_image_gaps() in order to achieve a desired area precision rather the current tuning of fill_image_gaps() which is tuned to make sure finite_source_mag() runs successfully.  Although I am sure that the area integral precision and an ability to trace the loops are highly correlated.  Another way to improve area integral precision is to go to a higher order curve integration outlined by Bozza (2010).  There is some precursor code commented out and untested to calculate the requisite kappa derivatives needed for Bozza (2010).  
 
+The parllelization is currently implented at the time stamp level.  That provides significant speed up for multi core computers.  I originally developed the code for supporting parallelization at the individual source vertex solve_binary_image() level.  Even though most time is spent here each vertex calculation is very short, its just a time sink because it is called many many times.  The result of parallizing using pytons pool.map appproach at this level was very disappointing because the parllelization overheads were comparable to the indivdual function call resulting in slowing down of the runtime.  However, allowing each core to work on a single time step / source position works really well for speedups.  On a single core machine with large 0.1 source radii in particularly complicated caustic crossing scenarios it can take up to 40secs to run the ipython microlens.py test code with the 3000 source position time stamps.  Most of the time for typical source radii the single core run time is of order 10 seconds for 3000 source position times.  You will find run times on large multi-core computer signficantly shorter.
+  
+What to work on next
+-Implementing a fitter.  That is a large undertaking, but would be needed to actually make the code useful for scientific purposes.
+
+-Runtimes can be improved.  The lengthy discussion above points out the easiest ways to improve runtime outside of porting all the code to a compiled language.
+
+-The test_point_approx() function which determines whether to use the point source approximation or finite source is very rudimentary and sometimes results in larger than desired jumps at the transitions.  That could be updated to something smarter.
+
+-Benchmarking against other codes.  I have only eyeballed the results seem consistent with published figures.  I have not rigorously checked the validity of my code against others.  Anyone with software to compare to I would love hear what you find.
+
+-The code does not have any error checking or rigorous magnification precision monitoring.  In other words the code doesnt know if it is messing up.
+
+-There is a scenario in trace_three_images() that is not implemented yet, but I have only encountered a crash in the unimplemented routine once in testing and wasn't able to recreate it to debug it.  This is a rare occurrence, but if the code does crash it will likely be here.
+
+-Implementing limb darkened sources.  Bozza (2010) describes how to implement limb darkened sources with the current polygon approach.  I wonder if it would actually be faster to switch to a 2D integral approach ala Bennett et al. once the edges of the source are outlined in the image plane, rather then continue to the polygon approach with multiple smaller source outlines.
+
+-Support triple lenses.  The Miller and Chote work in principle provides the nitty gritty details of implementing point source approximation for a triple lens.  I would definitely try and get the Gould & Gaucherel approach to the contour integral working that avoids the nauseating bookkeeping done in finite_source_mag() for sources strattling caustics before trying to extend the code to handle triple lens.
