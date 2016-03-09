@@ -39,6 +39,6 @@ time_step.lens = lens
                      
 # Calculate finite image shapes and magnification
 # debugLevel ==4 shows image shapes with interactive graphics
-curmag, magtyp = mepl.get_time_step_mag(time_step, debugLevel=3)
+curmag, magtyp = mepl.get_time_step_mag(time_step, debugLevel=4)
 print "Total Mag: {0:7.3f}".format(curmag)                    
 
