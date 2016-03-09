@@ -17,7 +17,7 @@ Test scripts are available to ease one into the code capabilities.  I recommend 
 
 Motivation
 
-With the upcoming K2 mission and campaign 9 along with WFIRST moving forward, I was intrigued to learn more about the microlensing extrasolar planet detection technique.  There appeared to be a lack of freely available code to play around with making pretty pictures of the caustics, finite source effects, and magnification light curves.  After reading the literature a lot I thought I had a pretty good idea of how to program up the binary lens scenario in the point source approximation.  I successfully did that without too much effort, and thought why not try to model finite source effects.  That ended up being a totally different ballgame, but I got far enough along to stick it through and decided to release MEPL for others to get started and hopefully improve and make more comprehensive.  I built the code from scratch with the main goals being an open source modern python code with an emphasis on making the code amenable to parallelization.
+With the upcoming K2 mission and campaign 9 along with WFIRST moving forward, I was intrigued to learn more about the microlensing extrasolar planet detection technique.  There appeared to be a lack of freely available code to play around with making pretty pictures of the caustics, finite source effects, and magnification light curves.  After reading the literature a lot I thought I had a pretty good idea of how to program up the binary lens scenario in the point source approximation.  I successfully did that without too much effort, and thought why not try to model finite source effects.  That ended up being a totally different ballgame, but I got far enough along to stick it through and decided to release MEPL for others to get started and hopefully improve and make more comprehensive.  I built the code from scratch with the main goals being an open source modern python code with an emphasis on making the code amenable to parallelization.  The current code does not do any data fitting!  It currently provides magnification light curves.  See next steps below.
 
 References
 
@@ -56,6 +56,8 @@ Gould & Gaucherel (1997) http://adsabs.harvard.edu/abs/1997ApJ...477..580G  in t
 
 Bozza, V. (2010) http://adsabs.harvard.edu/abs/2010MNRAS.408.2188B  Takes this approach to higher order approximation.  I have yet to implement the treatment from here, but this paper is also a good read for the contour integral approach for finite sources.
 
+Performance
 
+The performance bottleneck is the call to polyroots in solving the 5th order polynomial.  
 
 
